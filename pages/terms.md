@@ -6,11 +6,12 @@
 
 ## Terms of Use
 
-> v1.0.0 - effective June 12th, 2016 [History on GitHub](https://github.com/varci/support/commits/master/pages/terms.md)
+> v1.0.0 - effective June 12th, 2016
+> [view history](https://github.com/varci/support/commits/master/pages/terms.md)
 
 **TL;DR**
 
-We (the [folks at VarCI](https://github.com/orgs/VarCI/people) run a bot called 
+We (the [folks at VarCI](https://github.com/orgs/VarCI/people)) run a bot called 
 [VarCI-bot](https://github.com/VarCI-bot) and would **love** for you to use it. 
 VarCI's service is free and designed to give you as much control over what is 
 going on in your public project's issue tracker. However, be responsible in what 
@@ -20,8 +21,6 @@ on your behalf.
 
 If you find a project that you believe violates these Terms of Service, please
 [let us know](https://github.com/varci/support/issues/new).
-
----
 
 **XQTD Services Inc. operating as VarCI at Var.CI website ("Services"). By
 accessing or using the VarCI website ("VarCI"/"Site"/"we"/"us") or bot ("Bot"), 
