@@ -188,178 +188,22 @@ When writing conditions over multiple lines, each line is joined together with
 ### Example
 
 In the following example, the conditions become the string
-`action = "opened" AND length(body) < 50`:
+`action = "opened" AND "README.md" in files AND length(body) < 50`:
 
 ```yaml
 ruleset:
   rule_a:
     name: "My first rule"
     events: [ issues ]
-    when: length(body) < 50
     when:
       - action = "opened"
       - "README.md" in files
       - length(body) < 50
 ```
 
-The value of the `conditions:` key is always `true`.
-
-### Operators
-
-Within conditions, you can use the following operators on the event data:
-
-#### Filter
-
-The `filter()` operator supports all expression, and matcher components of
-[filter path syntax](#filter-path-syntax). You can use filter to retrieve data
-from arrays, along arbitrary paths quickly without having to loop through the
-data structures. Instead you use path expressions to qualify which elements you
-want returned.
-
-##### Filter path syntax
-
-A path expression is made of any number of tokens. Tokens are composed of two
-groups. Expressions, are used to traverse the array data, while matchers are
-used to qualify elements. You apply matchers to expression elements.
-
-###### Expression types
-
-| Expression | Definition                                                                        |
-|------------|-----------------------------------------------------------------------------------|
-| {n}        | Represents a numeric key. Will match any string or numeric key.                   |
-| {s}        | Represents a string. Will match any string value including numeric string values. |
-| Foo        | Matches keys with the exact same value.                                           |
-
-###### Attribute matching types
-
-| Matcher      | Definition                                                                  |
-|--------------|-----------------------------------------------------------------------------|
-| [id]         | Match elements with a given array key.                                      |
-| [id=2]       | Match elements with id equal to 2.                                          |
-| [id!=2]      | Match elements with id not equal to 2.                                      |
-| [id>2]       | Match elements with id greater than 2.                                      |
-| [id>=2]      | Match elements with id greater than or equal to 2.                          |
-| [id<2]       | Match elements with id less than 2                                          |
-| [id<=2]      | Match elements with id less than or equal to 2.                             |
-| [text=/.../] | Match elements that have values matching the regular expression inside .... |
-
-###### Common usage
-
-Given the following data:
-
-```json
-{
-  "users": [
-    {"id": 1, "name": "mark"},
-    {"id": 2, "name": "jane"},
-    {"id": 3, "name": "sally"},
-    {"id": 4, "name": "jose"}
-  ]
-}
-```
-
-... using the `filter()` operator, you can extract the names of all users:
-
-```
-filter(users, "name") => [ "mark", "jane", "sally", "jose" ]
-```
-
-###### Example condition
-
-Given the following event data:
-
-```json
-{
-  "action": "created",
-  "issue": {
-    "labels": [
-      {
-        "url": "https://api.github.com/repos/baxterthehacker/public-repo/labels/bug",
-        "name": "bug",
-        "color": "fc2929"
-      }
-    ]
-  }
-}
-```
-
-... the following conditions would resolve to `true`:
-
-```yaml
-ruleset:
-  rule_a:
-    when: filter(labels, "name") has "bug"
-```
-
-#### Length
-
-The `length()` operator is equivalent to the Javascript [`string.length`
-property](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/length).
-
-###### Example condition
-
-Given the following event data:
-
-```json
-{
-  "action": "created",
-  "issue": {
-    "body": "I'm less than 50 characters"
-  }
-}
-```
-
-... the following conditions would resolve to `true`:
-
-```yaml
-ruleset:
-  rule_a:
-    when: length(body) < 50
-```
-
-#### Count
-
-The `count()` operator is equivalent to the Javascript [`array.length`
-property](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length).
-
-###### Example condition
-
-Given the following event data:
-
-```json
-{
-  "action": "created",
-  "issue": {
-    "labels": [
-      {
-        "url": "https://api.github.com/repos/baxterthehacker/public-repo/labels/bug",
-        "name": "bug",
-        "color": "fc2929"
-      }
-    ]
-  }
-}
-```
-
-... the following conditions would resolve to `true`:
-
-```yaml
-ruleset:
-  rule_a:
-    when: count(labels) = 1
-```
-
-#### Sum
-
-The `sum()` operator is equivalent to the JavaScript code:
-
-```javascript
-arg.reduce(function (a, b) { return a + b });
-```
-
 ### Inline operators
 
-The following
+Inline operators allow you to add logic to your rules:
 
 | Operator       | JavaScript/jQuery equivalent |
 |----------------|------------------------------|
@@ -442,6 +286,159 @@ The `matches` inline operator checks if a string matches a pattern.
 ruleset:
   rule_a:
     when: not (body matches "/[0-9]{1,2}\.[0-9]+(\.[0-9]+)?/")
+```
+
+### Operators
+
+Within conditions, you can use the following operators on the event data:
+
+#### Length
+
+The `length()` operator is equivalent to the Javascript [`string.length`
+property](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/length).
+
+###### Example condition
+
+Given the following event data:
+
+```json
+{
+  "action": "created",
+  "issue": {
+    "body": "I'm less than 50 characters"
+  }
+}
+```
+
+... the following conditions would resolve to `true`:
+
+```yaml
+ruleset:
+  rule_a:
+    when: length(body) < 50
+```
+
+#### Count
+
+The `count()` operator is equivalent to the Javascript [`array.length`
+property](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length).
+
+###### Example condition
+
+Given the following event data:
+
+```json
+{
+  "action": "created",
+  "issue": {
+    "labels": [
+      {
+        "url": "https://api.github.com/repos/baxterthehacker/public-repo/labels/bug",
+        "name": "bug",
+        "color": "fc2929"
+      }
+    ]
+  }
+}
+```
+
+... the following conditions would resolve to `true`:
+
+```yaml
+ruleset:
+  rule_a:
+    when: count(labels) = 1
+```
+
+#### Sum
+
+The `sum()` operator is equivalent to the JavaScript code:
+
+```javascript
+arg.reduce(function (a, b) { return a + b });
+```
+
+#### Filter
+
+The `filter()` operator supports all expression, and matcher components of
+[filter path syntax](#filter-path-syntax). You can use filter to retrieve data
+from arrays, along arbitrary paths quickly without having to loop through the
+data structures. Instead you use path expressions to qualify which elements you
+want returned.
+
+##### Filter path syntax
+
+A path expression is made of any number of tokens. Tokens are composed of two
+groups. Expressions, are used to traverse the array data, while matchers are
+used to qualify elements. You apply matchers to expression elements.
+
+###### Expression types
+
+| Expression | Definition                                                                        |
+|------------|-----------------------------------------------------------------------------------|
+| {n}        | Represents a numeric key. Will match any string or numeric key.                   |
+| {s}        | Represents a string. Will match any string value including numeric string values. |
+| Foo        | Matches keys with the exact same value.                                           |
+
+###### Attribute matching types
+
+| Matcher      | Definition                                                                  |
+|--------------|-----------------------------------------------------------------------------|
+| [id]         | Match elements with a given array key.                                      |
+| [id=2]       | Match elements with id equal to 2.                                          |
+| [id!=2]      | Match elements with id not equal to 2.                                      |
+| [id>2]       | Match elements with id greater than 2.                                      |
+| [id>=2]      | Match elements with id greater than or equal to 2.                          |
+| [id<2]       | Match elements with id less than 2                                          |
+| [id<=2]      | Match elements with id less than or equal to 2.                             |
+| [text=/.../] | Match elements that have values matching the regular expression inside .... |
+
+###### Common usage
+
+Given the following data:
+
+```json
+{
+  "users": [
+    {"id": 1, "name": "mark"},
+    {"id": 2, "name": "jane"},
+    {"id": 3, "name": "sally"},
+    {"id": 4, "name": "jose"}
+  ]
+}
+```
+
+... using the `filter()` operator, you can extract the names of all users:
+
+```
+filter(users, "name") => [ "mark", "jane", "sally", "jose" ]
+```
+
+###### Example condition
+
+Given the following event data:
+
+```json
+{
+  "action": "created",
+  "issue": {
+    "labels": [
+      {
+        "url": "https://api.github.com/repos/baxterthehacker/public-repo/labels/bug",
+        "name": "bug",
+        "color": "fc2929"
+      }
+    ]
+  }
+}
+```
+
+... the following conditions would resolve to `true`:
+
+```yaml
+ruleset:
+  rule_a:
+    when: filter(labels, "name") has "bug"
 ```
 
 ## Actions
