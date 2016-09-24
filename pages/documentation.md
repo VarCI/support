@@ -75,7 +75,7 @@ conditions under which to perform them.
 
 A rule has the following required keys:
 
-- [`name`]: A human readable name for the filter.
+- [`name`](#name): A human readable name for the filter.
 - [`events`](#events): An array of GitHub events the filter matches on (e.g.
     `[ issues, pull_request ]`).
 - [`conditions`](#conditions): A string/array of conditions that an incoming
