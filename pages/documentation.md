@@ -34,7 +34,7 @@ repository called `repo-name`, Var would request the following file:
 ### Example
 
 ```yaml
-filters:
+ruleset:
   short_description:
     name: "Close issues with short descriptions"
     events: [ issues ]
